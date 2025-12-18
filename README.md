@@ -36,19 +36,31 @@ cd android
 - `ios/` is a placeholder for an upcoming wrapper project.
 
 ## Demo
-Screenshots (Android):
-| Collapsed | Expanded |
-| --- | --- |
-| <img src="assets/android_collapsed.png" width="280" /> | <img src="assets/android_expanded.png" width="280" /> |
-| <img src="assets/android_paused.png" width="280" /> | <img src="assets/android_seek.png" width="280" /> |
-| <img src="assets/android_double_tap.png" width="280" /> |  |
-
 Video demos (download required):
 
 - [Portrait (WebM)](assets/android_portrait.webm)
 - [Landscape (WebM)](assets/android_landscape.webm)
- 
-Note: the demo background is not a real decoded video; it’s just a rendered surface so the UI interactions are easy to see.
+
+#### Screenshots (Android)
+Collapsed:
+
+<img src="assets/android_collapsed.png" width="360" />
+
+Expanded:
+
+<img src="assets/android_expanded.png" width="360" />
+
+Paused:
+
+<img src="assets/android_paused.png" width="360" />
+
+Seeking:
+
+<img src="assets/android_seek.png" width="360" />
+
+Double-tap seek:
+
+<img src="assets/android_double_tap.png" width="360" />
 
 ## Project structure
 
