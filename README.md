@@ -42,10 +42,8 @@ Video demos (download required):
 - [Landscape (WebM)](assets/android_landscape.webm)
 
 #### Screenshots (Android)
-<img src="assets/android_collapsed.png" width="360" />
-<img src="assets/android_expanded.png" width="360" />  
-<img src="assets/android_paused.png" width="360" />
-<img src="assets/android_seek.png" width="360" />  
+<img src="assets/android_collapsed.png" width="360" /> <img src="assets/android_expanded.png" width="360" />
+<img src="assets/android_paused.png" width="360" /> <img src="assets/android_seek.png" width="360" />
 <img src="assets/android_double_tap.png" width="360" />
 
 ## Project structure
