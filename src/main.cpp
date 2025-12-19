@@ -31,9 +31,16 @@
 #include <android/log.h>
 #include <GLES3/gl3.h>
 #define LOG(...) __android_log_print(ANDROID_LOG_INFO, "SkiaSeekBar", __VA_ARGS__)
+#elif defined(__APPLE__)
+#include <TargetConditionals.h>
+#if TARGET_OS_IPHONE
+#include <OpenGLES/ES3/gl.h>
+#endif
+#include <cstdio>
+#define LOG(...) do { printf(__VA_ARGS__); printf("\n"); } while(0)
 #else
 #include <cstdio>
-#define LOG(...) printf(__VA_ARGS__); printf("\n")
+#define LOG(...) do { printf(__VA_ARGS__); printf("\n"); } while(0)
 #include <GL/gl.h>
 #endif
 
@@ -89,9 +96,15 @@ struct AppState : public skplayer_ui::VideoContainer::Listener {
         // Query actual stencil buffer size
         GLint stencilBits = 0;
         glGetIntegerv(GL_STENCIL_BITS, &stencilBits);
+        LOG("Stencil bits: %d", stencilBits);
+
+        // Get the current framebuffer - on iOS, SDL creates a non-zero FBO
+        GLint currentFBO = 0;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFBO);
+        LOG("Current FBO: %d", currentFBO);
 
         GrGLFramebufferInfo fbInfo;
-        fbInfo.fFBOID = 0;
+        fbInfo.fFBOID = static_cast<GrGLuint>(currentFBO);
         fbInfo.fFormat = fbFormat;
 
         auto backendRT = GrBackendRenderTargets::MakeGL(width, height, 0, stencilBits, fbInfo);
@@ -114,6 +127,7 @@ struct AppState : public skplayer_ui::VideoContainer::Listener {
             return false;
         }
 
+        LOG("Skia surface created: %d x %d", surface->width(), surface->height());
         updateLayout();
         return true;
     }
@@ -247,11 +261,20 @@ SDL_AppResult SDL_AppInit(void** appstate, int /*argc*/, char* /*argv*/[]) {
     }
 
     SDL_GetWindowSizeInPixels(state->window.get(), &state->width, &state->height);
-    LOG("Window: %d x %d", state->width, state->height);
+    LOG("Window pixels: %d x %d", state->width, state->height);
 
-    SDL_DisplayID displayID = SDL_GetDisplayForWindow(state->window.get());
-    float scale = SDL_GetDisplayContentScale(displayID);
-    state->dpiScale = (scale > 0.0f) ? scale : 1.0f;
+    // Get DPI scale - compare pixel size to point size
+    int pointWidth = 0, pointHeight = 0;
+    SDL_GetWindowSize(state->window.get(), &pointWidth, &pointHeight);
+    LOG("Window points: %d x %d", pointWidth, pointHeight);
+    
+    if (pointWidth > 0 && state->width > 0) {
+        state->dpiScale = static_cast<float>(state->width) / static_cast<float>(pointWidth);
+    } else {
+        SDL_DisplayID displayID = SDL_GetDisplayForWindow(state->window.get());
+        float scale = SDL_GetDisplayContentScale(displayID);
+        state->dpiScale = (scale > 0.0f) ? scale : 1.0f;
+    }
     LOG("Display scale: %.2f", state->dpiScale);
 
     state->glInterface = GrGLMakeNativeInterface();
@@ -398,7 +421,8 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event) {
             break;
         }
 
-#ifndef __ANDROID__
+// Mouse events for desktop only (not Android/iOS which use touch)
+#if !defined(__ANDROID__) && !(defined(__APPLE__) && TARGET_OS_IPHONE)
         case SDL_EVENT_MOUSE_BUTTON_DOWN: {
             float x = static_cast<float>(event->button.x) - state->containerBounds.left();
             float y = static_cast<float>(event->button.y) - state->containerBounds.top();

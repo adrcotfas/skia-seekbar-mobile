@@ -1,4 +1,4 @@
-package com.example.skiaseekbar
+package com.adrcotfas.skiaseekbar
 
 import org.libsdl.app.SDLActivity
 

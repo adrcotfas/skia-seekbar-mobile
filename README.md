@@ -6,7 +6,7 @@ A small C++ app that renders a YouTube-like seek bar with **Skia**. The “video
 
 ### 1) Repo + dependencies
 
-Prereqs: `git`, `python3`, `cmake`.
+Prereqs: `git`, `python3`, and `cmake` (for iOS; Android uses SDK-bundled CMake via Gradle).
 
 ```bash
 git clone <repo-url>
@@ -31,9 +31,21 @@ cd android
 ./gradlew :app:installDebug
 ```
 
-**iOS (planned)**
+**iOS** (device only, no simulator support)
+- Install Xcode + Command Line Tools.
+- Build Skia:
 
-- `ios/` is a placeholder for an upcoming wrapper project.
+```bash
+./scripts/build-skia-ios.sh
+```
+
+- Generate Xcode project:
+
+```bash
+./scripts/build-ios.sh
+```
+
+- Open `ios/build/skia_player_demo.xcodeproj` in Xcode, select a real device, and build/run.
 
 ## Demo
 Video demos (download required):
@@ -51,8 +63,8 @@ Video demos (download required):
 - `src/` — native app entry point. Creates an SDL window + GLES context, wires Skia to it, forwards input events, and drives the UI library.
 - `libs/skplayer_ui/` — reusable Skia UI library (seek bar + overlays). No platform/windowing code.
 - `android/` — Android Gradle project. Uses `externalNativeBuild` to build the C++ code via the top-level `CMakeLists.txt`. Reuses SDL’s Android Java glue code.
-- `ios/` — placeholder for an iOS wrapper (not wired up).
-- `scripts/` — helper scripts (sync Skia deps, build Skia for Android).
+- `ios/` — iOS resources (Info.plist, LaunchScreen.storyboard, Assets). CMake generates the Xcode project.
+- `scripts/` — helper scripts (sync Skia deps, build Skia for Android/iOS).
 - `third_party/` — external dependencies: Skia, SDL3, and `depot_tools`.
 - `assets/` — demo media for the README.
 
@@ -122,5 +134,4 @@ Implementation details are in `libs/skplayer_ui/src/`.
 ## Known limitations / next steps
 
 - No real media playback yet (seek position is simulated); the UI is ready to be driven by a player clock.
-- iOS wrapper is not wired up yet (`ios/` is a placeholder).
 - Add a small test harness for hit-testing and time formatting; add visual regression screenshots for the seek bar.

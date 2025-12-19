@@ -7,6 +7,11 @@ add_library(skplayer_ui STATIC
     include/skplayer_ui/ThemeConstants.h
 )
 
+# Prevent library from being included in iOS archive
+set_target_properties(skplayer_ui PROPERTIES
+    XCODE_ATTRIBUTE_SKIP_INSTALL "YES"
+)
+
 add_library(skplayer_ui::skplayer_ui ALIAS skplayer_ui)
 
 target_compile_features(skplayer_ui PUBLIC cxx_std_17)

@@ -4,11 +4,20 @@ plugins {
 }
 
 android {
-    namespace = "com.example.skiaseekbar"
+    namespace = "com.adrcotfas.skiaseekbar"
     compileSdk = 36
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("../release.keystore")
+            storePassword = "android"
+            keyAlias = "release"
+            keyPassword = "android"
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.example.skiaseekbar"
+        applicationId = "com.adrcotfas.skiaseekbar"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -37,7 +46,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 

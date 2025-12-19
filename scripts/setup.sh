@@ -14,8 +14,12 @@ echo ""
 echo "[1/5] Checking prerequisites..."
 command -v git >/dev/null || { echo "ERROR: git required"; exit 1; }
 command -v python3 >/dev/null || { echo "ERROR: python3 required"; exit 1; }
-command -v cmake >/dev/null || { echo "ERROR: cmake required"; exit 1; }
-echo "  ✓ All prerequisites found"
+if command -v cmake >/dev/null; then
+    echo "  ✓ cmake found (required for iOS builds)"
+else
+    echo "  ⚠ cmake not found (only needed for iOS; Android uses SDK-bundled CMake)"
+fi
+echo "  ✓ Core prerequisites found"
 
 # Initialize submodules
 echo ""
